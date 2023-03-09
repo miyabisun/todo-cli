@@ -33,7 +33,7 @@ update = (task) ->
   (todo = list!)
   |> R.find-index (.id is task.id)
   |> R.lens-index
-  |> R.set _, task, todo
+  |> R.set _, {...task, updated: cdate!.text!}, todo
   |> save
 
 new-id = (todo) ->
@@ -43,7 +43,7 @@ new-id = (todo) ->
 add = ({name, type, url}) ->
   now = cdate!.text!
   if task = find-by type, name
-    return update {...task, started: no, done: no, updated: now}
+    return update {...task, started: no, done: no}
   todo = list!
   save [...todo, {
     id: new-id todo
@@ -70,24 +70,21 @@ remove-by = (type, name) ->
 
 start = (id) ->
   if task = list!.find (.id is id)
-    now = cdate!.text!
-    update {...task, started: yes, done: no, updated: now}
+    update {...task, started: yes, done: no}
 
 done = (id) ->
   if task = list!.find (.id is id)
-    now = cdate!.text!
-    update {...task, started: yes, done: yes, updated: now}
+    update {...task, started: yes, done: yes}
 
 pause = (id) ->
   if task = list!.find (.id is id)
-    now = cdate!.text!
-    update {...task, started: no, done: no, updated: now}
+    update {...task, started: no, done: no}
 
 reindex = ->
   list!.map (task, i) -> {...task, id: i + 1}
   |> save
 
 module.exports = {
-  list, find, find-by, add, remove, remove-by
+  list, find, find-by, add, update, remove, remove-by
   start, done, pause, remove-all-done, reindex, save
 }

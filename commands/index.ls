@@ -1,6 +1,7 @@
 require! {
   \./list
   \./add
+  \./update
   \./next
   \./open
   \./start
@@ -11,5 +12,5 @@ require! {
 }
 
 module.exports = (program) ->
-  [list, add, next, open, start, end, pause, remove, reindex]
+  [list, add, update, next, open, start, end, pause, remove, reindex]
     .for-each (cb) -> cb program
