@@ -30,8 +30,7 @@ update = (task) ->
   unless find task.id
     console.error "not found task:", task
     return
-  todo = list!
-  todo
+  (todo = list!)
   |> R.find-index (.id is task.id)
   |> R.lens-index
   |> R.set _, task, todo
@@ -46,19 +45,17 @@ add = ({name, type, url}) ->
   now = cdate!.text!
   if task = find-by type, name
     return update {...task, started: no, done: no, updated: now}
-  todo = list!
-  todo.push {
+  save [...list!, {
     id: new-id todo
     name, type, url
     started: no
     done: no
     created: now
     updated: now
-  }
-  save todo
+  }]
 
 remove = (id) ->
-  list!.filter -> id isnt it.id
+  list!.filter (.id isnt id)
   |> save
 
 remove-by = (type, name) ->
@@ -67,6 +64,22 @@ remove-by = (type, name) ->
     return
   remove task.id
 
+start = (id) ->
+  if task = list!.find (.id is id)
+    now = cdate!.text!
+    update {...task, started: yes, done: no, updated: now}
+
+done = (id) ->
+  if task = list!.find (.id is id)
+    now = cdate!.text!
+    update {...task, started: yes, done: yes, updated: now}
+
+pause = (id) ->
+  if task = list!.find (.id is id)
+    now = cdate!.text!
+    update {...task, started: no, done: no, updated: now}
+
 module.exports = {
   list, find, find-by, add, remove, remove-by
+  start, done, pause, save
 }
