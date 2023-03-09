@@ -10,7 +10,7 @@ module.exports = (program) ->
     .description "Finish Task"
     .action (id) ->
       if id
-        todo.end id
+        todo.done Number id
       else
         task = todo.list!.find -> it.started and not it.done
-        todo.end task.id if task
+        todo.done task.id if task

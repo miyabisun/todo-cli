@@ -11,7 +11,14 @@ module.exports = (program) ->
     .alias \n
     .description "Check next task"
     .action ->
-      tasks = todo.list!.filter (.done is no)
-      if task = tasks.find (.started is yes)
-        return output task
-      output tasks.0
+      tasks = todo.list!
+      switch
+      | tasks.find (-> it.started and not it.done) =>
+        {id, type, name} = that
+        console.log "[#id] #type: #name"
+      | tasks.find (-> not it.started and not it.done) =>
+        # waiting tasks only
+        {id, type, name} = that
+        console.log "(waiting) [#id] #type: #name"
+      | _ =>
+        console.log "all done tasks."

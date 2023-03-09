@@ -58,6 +58,10 @@ remove = (id) ->
   list!.filter (.id isnt id)
   |> save
 
+remove-all-done = ->
+  list!.filter (.done) >> (not)
+  |> save
+
 remove-by = (type, name) ->
   unless task = find-by type, name
     console.error "not found task:", {type, name}
@@ -81,5 +85,5 @@ pause = (id) ->
 
 module.exports = {
   list, find, find-by, add, remove, remove-by
-  start, done, pause, save
+  start, done, pause, remove-all-done, save
 }

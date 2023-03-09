@@ -10,6 +10,6 @@ module.exports = (program) ->
     .description "Start Task"
     .action (id) ->
       if id
-        todo.start id
+        todo.start Number id
       else
         todo.start todo.list!.0.id
