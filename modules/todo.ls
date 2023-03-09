@@ -37,15 +37,15 @@ update = (task) ->
   |> save
 
 new-id = (todo) ->
-  ids = todo.map (.id)
-  for i from 1 to Infinity
-    return i unless i in ids
+  todo.map (.id) .reduce _, 1
+  <| (max, it) -> Math.max max, it + 1
 
 add = ({name, type, url}) ->
   now = cdate!.text!
   if task = find-by type, name
     return update {...task, started: no, done: no, updated: now}
-  save [...list!, {
+  todo = list!
+  save [...todo, {
     id: new-id todo
     name, type, url
     started: no
@@ -83,7 +83,11 @@ pause = (id) ->
     now = cdate!.text!
     update {...task, started: no, done: no, updated: now}
 
+reindex = ->
+  list!.map (task, i) -> {...task, id: i + 1}
+  |> save
+
 module.exports = {
   list, find, find-by, add, remove, remove-by
-  start, done, pause, remove-all-done, save
+  start, done, pause, remove-all-done, reindex, save
 }
