@@ -3,6 +3,7 @@ require! {
 }
 
 output = ({id, type, name}) ->
+  type = if type then "#type: " else ""
   console.log "[#id] #type: #name"
 
 module.exports = (program) ->
@@ -15,10 +16,12 @@ module.exports = (program) ->
       switch
       | tasks.find (-> it.started and not it.done) =>
         {id, type, name} = that
-        console.log "[#id] #type: #name"
+        type = if type then "#type: " else ""
+        console.log "[#id] #type#name"
       | tasks.find (-> not it.started and not it.done) =>
         # waiting tasks only
         {id, type, name} = that
-        console.log "(waiting) [#id] #type: #name"
+        type = if type then "#type: " else ""
+        console.log "(waiting) [#id] #type#name"
       | _ =>
         console.log "all done tasks."
