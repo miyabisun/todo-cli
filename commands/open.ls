@@ -19,7 +19,10 @@ module.exports = (program) ->
     .description "Open the following task with URL in your browser"
     .action (id) ->
       if id
-        output todo.list!.find (.id is id)
+        todo.list!.find (.id is Number id)
+        |> (or {})
+        |> output
       else
         todo.list!.find -> it.started and not it.done
+        |> (or {})
         |> output
