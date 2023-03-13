@@ -8,7 +8,6 @@ module.exports = (program) ->
     .alias "a"
     .argument "<name>", "Task Name"
     .description "Finish Task",
-    .option "-t, --type <value>", "Category"
     .option "-u, --url <value>", "Refernce Site"
-    .action (name, {type, url}) ->
-      todo.add name, {type, url}
+    .action (name, {url}) ->
+      todo.add name, {url}
