@@ -11,4 +11,4 @@ module.exports = (program) ->
     .option "-t, --type <value>", "Category"
     .option "-u, --url <value>", "Refernce Site"
     .action (name, {type, url}) ->
-      todo.add {name, type, url}
+      todo.add name, {type, url}

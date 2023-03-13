@@ -2,9 +2,8 @@ require! {
   \../modules/todo
 }
 
-output = ({id, type, name}) ->
-  type = if type then "#type: " else ""
-  console.log "[#id] #type: #name"
+output = ({id, name}) ->
+  console.log "[#id] #name"
 
 module.exports = (program) ->
   program
@@ -15,13 +14,11 @@ module.exports = (program) ->
       tasks = todo.list!
       switch
       | tasks.find (-> it.started and not it.done) =>
-        {id, type, name} = that
-        type = if type then "#type: " else ""
-        console.log "[#id] #type#name"
+        {id, name} = that
+        console.log "[#id] #name"
       | tasks.find (-> not it.started and not it.done) =>
         # waiting tasks only
-        {id, type, name} = that
-        type = if type then "#type: " else ""
-        console.log "(waiting) [#id] #type#name"
+        {id, name} = that
+        console.log "(waiting) [#id] #name"
       | _ =>
         console.log "all done tasks."

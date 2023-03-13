@@ -14,6 +14,7 @@ list = ->
     |> (or [])
   catch
     fs.write-file-sync path, "[]"
+    return []
 
 save = (todo) ->
   JSON.stringify todo, null, 2
@@ -22,9 +23,8 @@ save = (todo) ->
 find = (id) ->
   list!.find -> id is it.id
 
-find-by = (type, name) ->
-  list!.find ->
-    type is it.type and name is it.name
+find-by = (name) ->
+  list!.find (.name is name)
 
 update = (task) ->
   unless find task.id
@@ -40,19 +40,18 @@ new-id = (todo) ->
   todo.map (.id) .reduce _, 1
   <| (max, it) -> Math.max max, it + 1
 
-add = ({name, type, url}) ->
+add = (name, meta) ->
   now = cdate!.text!
-  if task = find-by type, name
+  if task = find-by name
     return update {...task, started: no, done: no}
   todo = list!
-  save [...todo, {
+  save [...todo, {name, meta} <<<
     id: new-id todo
-    name, type, url
     started: no
     done: no
     created: now
     updated: now
-  }]
+  ]
 
 remove = (id) ->
   list!.filter (.id isnt id)
@@ -62,9 +61,9 @@ remove-all-done = ->
   list!.filter (.done) >> (not)
   |> save
 
-remove-by = (type, name) ->
-  unless task = find-by type, name
-    console.error "not found task:", {type, name}
+remove-by = (name) ->
+  unless task = find-by name
+    console.error "not found task:", name
     return
   remove task.id
 

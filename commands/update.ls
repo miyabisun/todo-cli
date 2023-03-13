@@ -15,6 +15,7 @@ module.exports = (program) ->
       task = todo.find Number id
       if task
         task.name = name if name
-        task.type = type if type
-        task.url = url if url
+        task.meta = {} unless task.meta
+        task.meta.type = type if type
+        task.meta.url = url if url
         todo.update task
