@@ -3,12 +3,13 @@ require! {
   \../modules/todo
 }
 
-main = ({json, yaml}) ->
-  | json => console.log todo.list!
-  | yaml => console.log YAML.stringify todo.list!, null, indent: 2
+main = (ids, {json, yaml}) ->
+  ids = ids.map Number
+  tasks = if ids.length then todo.list!.filter (.id in ids) else todo.list!
+  switch
+  | json => console.log tasks
+  | yaml => console.log YAML.stringify tasks, null, indent: 2
   | _ =>
-    tasks = todo.list!
-
     # started
     started = tasks.filter -> it.started and not it.done
     if started.length > 0
@@ -34,10 +35,11 @@ module.exports = (program) ->
   program
     .command \list
     .alias \ls
+    .argument "[id...]", "Task ID"
     .option "-j, --json", "display in JSON format"
     .option "-y, --yaml", "display in YAML format"
     .description "Check the list of ToDo"
     .action main
   program
     .description "Check the list of ToDo"
-    .action main
+    .action -> main [], {}
