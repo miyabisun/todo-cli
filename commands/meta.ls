@@ -11,15 +11,15 @@ module.exports = (program) ->
     .argument "[value]", "Value"
     .option "-r, --remove", "Remove key"
     .description "Update meta infomation"
-    .action (id, key, {remove}) ->
+    .action (id, key, value, {remove}) ->
       task = todo.find Number id
       switch
-      | not task =>
+      | not task => return
       | remove =>
         return unless task.meta
         delete task.meta[key]
         todo.update task
       | _ =>
         task.meta = {} unless task.meta
-        task.meta[key]
+        task.meta[key] = value
         todo.update task
