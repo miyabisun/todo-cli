@@ -40,18 +40,19 @@ new-id = (todo) ->
   todo.map (.id) .reduce _, 1
   <| (max, it) -> Math.max max, it + 1
 
-add = (name, meta) ->
+add = (name, meta, update) ->
   now = cdate!.text!
-  if task = find-by name
-    return update {...task, started: no, done: no}
+  return that if find-by name
   todo = list!
-  save [...todo, {name, meta} <<<
-    id: new-id todo
-    started: no
-    done: no
-    created: now
-    updated: now
-  ]
+  task = {name, meta}
+    <<< do
+      id: new-id todo
+      started: no
+      done: no
+      created: now
+      updated: now
+    <<< {...update}
+  save [...todo, task]
 
 remove = (id) ->
   list!.filter (.id isnt id)
