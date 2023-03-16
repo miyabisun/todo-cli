@@ -3,25 +3,24 @@ require! {
   \cdate : {cdate}
   ramda: R
 }
-
 path = "#{process.env.HOME}/.todo.json"
 
 list = ->
-  try
+  if fs.exists-sync path
     fs.read-file-sync path
     |> (.to-string!)
     |> JSON.parse
-    |> (or [])
-  catch
+  else
     fs.write-file-sync path, "[]"
     return []
 
 save = (todo) ->
   JSON.stringify todo, null, 2
   |> fs.write-file-sync path, _
+  return todo
 
 find = (id) ->
-  list!.find -> id is it.id
+  list!.find (.id is id)
 
 find-by = (name) ->
   list!.find (.name is name)
@@ -40,7 +39,7 @@ new-id = (todo) ->
   todo.map (.id) .reduce _, 1
   <| (max, it) -> Math.max max, it + 1
 
-add = (name, meta, update) ->
+add = (name, meta, update = {}) ->
   now = cdate!.text!
   return that if find-by name
   todo = list!
